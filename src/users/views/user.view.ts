@@ -1,5 +1,6 @@
 import { User } from '../entities/user.entity';
 import { UserRole } from '../enums/user-roles.enum';
+import { DocumentsView } from './document.view';
 
 export class UserView {
   constructor(private readonly data: User | User[]) {}
@@ -29,12 +30,14 @@ export class UserView {
       phoneNumber: user.phoneNumber,
       fullname: user.fullname,
       dateOfBirth: user.dateOfBirth,
-      createdAt: user.createdAt
+      createdAt: user.createdAt,
+
     };
 
     return {
       ...userData,
-      highestRole
+      highestRole,
+      documents: user.documents ? new DocumentsView(user.documents).render() : {},
     };
   }
 }

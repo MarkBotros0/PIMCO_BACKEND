@@ -1,8 +1,10 @@
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm';
 import { BaseEntity } from '../../shared/entities/base.entity';
 import { UserRole } from '../enums/user-roles.enum';
 import { BlacklistedRefreshToken } from '../../auth/entities/blacklisted-refresh-token.entity';
-import { EmployeeType } from '../enums/employee-type.enum';
+import { EmployeeTypeEntity } from './employee-type.entity';
+import { UserDocuments } from './user-documents.entity';
+
 
 @Entity({ name: 'users' })
 export class User extends BaseEntity {
@@ -23,6 +25,19 @@ export class User extends BaseEntity {
   password: string;
 
   @Column({
+    type: 'text',
+    nullable: true
+  })
+  email: string;
+
+  @Column({
+    type: 'boolean',
+    name: 'is_active',
+    default: false,
+  })
+  isActive: boolean;
+
+  @Column({
     type: 'enum',
     name: 'user_roles',
     enum: UserRole,
@@ -32,23 +47,28 @@ export class User extends BaseEntity {
   roles: UserRole[];
 
   @Column({
-    type: 'enum',
-    name: 'emplyee_type',
-    enum: EmployeeType,
-    nullable: true
-  })
-  employeeType?: EmployeeType;
-
-  @Column({
     type: 'date',
     name: 'date_of_birth',
     nullable: true
   })
   dateOfBirth: Date;
 
+  @Column({
+    type: 'text',
+    name: 'address',
+    nullable: true
+  })
+  address: string;
+
+  @ManyToOne(() => EmployeeTypeEntity,(type) => type.users,{nullable:true})
+  @JoinColumn({ name: 'employee_type' })
+  employeeType: EmployeeTypeEntity;
+
   @OneToMany(() => BlacklistedRefreshToken, (token) => token.user, {
     cascade: true
   })
   blacklistedRefreshTokens: BlacklistedRefreshToken[];
 
+  @OneToOne(() => UserDocuments, (documents) => documents.user)
+  documents: UserDocuments;
 }

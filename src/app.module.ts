@@ -7,6 +7,7 @@ import { DatabaseModule } from './database/database.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { SitesModule } from './sites/sites.module';
 
 @Module({
   imports: [
@@ -16,7 +17,8 @@ import { AppService } from './app.service';
     ScheduleModule.forRoot(),
     DatabaseModule,
     AuthModule,
-    UsersModule
+    UsersModule,
+    SitesModule
   ],
   controllers: [AppController],
   providers: [AppService]
