@@ -1,4 +1,5 @@
 {
+  "extends": ["plugin:prettier/recommended"],
   "singleQuote": true,
-  "trailingComma": "all"
+  "trailingComma": "none"
 }
