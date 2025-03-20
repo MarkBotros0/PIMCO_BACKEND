@@ -13,7 +13,7 @@ export class AdminOrHRGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const roles: UserRole[] = request.user?.userRoles;
+    const roles: UserRole[] = request.user?.roles;
     const userId: number = request.user?.id;
 
     if (request.user) {

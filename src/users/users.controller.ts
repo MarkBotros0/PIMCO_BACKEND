@@ -16,7 +16,8 @@ import { User } from './entities/user.entity';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserId } from '../shared/decorators/user-id.decorator';
 import { AdminOrHRGuard } from '../auth/guards/admin-or-hr.guard';
-import { CreateUserDto } from './dtos/create-user.dto';
+import { EmployeeTypeEntity } from './entities/employee-type.entity';
+import { EmployeeTypeView } from './views/employee-type.view';
 
 @Controller('users')
 @ApiTags('users')
@@ -38,7 +39,6 @@ export class UsersController {
     return new UserView(users).render();
   }
 
-
   @UseGuards(AccessTokenGuard, AdminOrHRGuard)
   @Get('requests')
   async getUserRequests() {
@@ -46,25 +46,25 @@ export class UsersController {
     return new UserView(users).render();
   }
 
-  @UseGuards(AccessTokenGuard, AdminOrHRGuard)
-  @Post()
-  async createUserRequest(@Body() body: CreateUserDto) {
-    const user:User = await this.usersService.createUserRequest(body);
-    return new UserView(user).render();
+  @Get('employee-types')
+  async getEmpolyeeTypes() {
+    const employeeTypes: EmployeeTypeEntity[] =
+      await this.usersService.getEmployeeTypes();
+    return new EmployeeTypeView(employeeTypes).render();
   }
 
   @UseGuards(AccessTokenGuard, AdminOrHRGuard)
   @Post('request/accept/:userId')
   async acceptUserRequest(@Param('userId') userId: number) {
     await this.usersService.acceptUserRequest(userId);
-    return { message: "User Request accepted successfully" };
+    return { message: 'User Request accepted successfully' };
   }
 
   @UseGuards(AccessTokenGuard, AdminOrHRGuard)
   @Post('request/reject/:userId')
   async rejectUserRequest(@Param('userId') userId: number) {
     await this.usersService.rejectUserRequest(userId);
-    return { message: "User Request accepted successfully" };
+    return { message: 'User Request rejected successfully' };
   }
 
   @UseGuards(AccessTokenGuard)

@@ -11,14 +11,17 @@ import { UserRole } from './enums/user-roles.enum';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UserDocuments } from './entities/user-documents.entity';
 import { UserDocumentsDto } from './dtos/user-documents.dto';
+import { EmployeeTypeEntity } from './entities/employee-type.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
-  @InjectRepository(UserDocuments)
-    private readonly userDocumentsRepository: Repository<UserDocuments>
+    @InjectRepository(UserDocuments)
+    private readonly userDocumentsRepository: Repository<UserDocuments>,
+    @InjectRepository(EmployeeTypeEntity)
+    private readonly employeeTypeEntityRepository: Repository<EmployeeTypeEntity>
   ) {}
 
   async findOneByPhoneNumber(phoneNumber: string): Promise<User> {
@@ -47,7 +50,9 @@ export class UsersService {
     phoneNumber: string,
     data?: Partial<Omit<User, 'phoneNumber'>>
   ): Promise<User> {
-    const user = await this.usersRepository.findOne({ where: { phoneNumber } });
+    const user: User = await this.usersRepository.findOne({
+      where: { phoneNumber }
+    });
 
     if (user) {
       throw new BadRequestException(
@@ -61,7 +66,7 @@ export class UsersService {
   async update(userId: number, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.findOneById(userId);
 
-    const { phoneNumber,documents, ...updateData } = updateUserDto;
+    const { phoneNumber, documents, ...updateData } = updateUserDto;
 
     Object.assign(user, updateData);
     await this.usersRepository.update(user.id, updateData);
@@ -97,52 +102,78 @@ export class UsersService {
     return !!user;
   }
 
-  async getAllInActiveUsers():Promise<User[]> {
+  async getAllInActiveUsers(): Promise<User[]> {
     return this.usersRepository.find({
       relations: ['documents'],
-      where:{
-        isActive:false
+      where: {
+        isActive: false
       }
     });
   }
 
-  async acceptUserRequest(userId: number):Promise<void> {
-    const user :User = await this.findOneById(userId);
-    if (!user || user.isActive){
-      throw new BadRequestException("User is already active or didn't send request");
+  async acceptUserRequest(userId: number): Promise<void> {
+    const user: User = await this.findOneById(userId);
+    if (!user || user.isActive) {
+      throw new BadRequestException(
+        "User is already active or didn't send request"
+      );
     }
     user.isActive = true;
     await this.usersRepository.save(user);
   }
 
-  async rejectUserRequest(userId: number):Promise<void> {
-    const user :User = await this.findOneById(userId);
-    if (!user || user.isActive){
-      throw new BadRequestException("User is already active or didn't send request");
+  async rejectUserRequest(userId: number): Promise<void> {
+    const user: User = await this.findOneById(userId);
+    if (!user || user.isActive) {
+      throw new BadRequestException(
+        "User is already active or didn't send request"
+      );
     }
-    await this.usersRepository.delete({ id:user.id });
+    await this.usersRepository.delete({ id: user.id });
+  }
+
+  async isValidEmployeeType(employeeTypeId: number): Promise<boolean> {
+    const type = await this.employeeTypeEntityRepository.findOne({
+      where: { id: employeeTypeId }
+    });
+    if (!type) {
+      throw new BadRequestException('Employee type not found');
+    }
+    return true;
   }
 
   async createUserRequest(createUserDto: CreateUserDto) {
-    await this.findOneByPhoneNumber(createUserDto.phoneNumber);
-
-    const user:User = await this.usersRepository.save({
-      phoneNumber : createUserDto.phoneNumber,
-      fullname:createUserDto.fullname,
-      dateOfBirth: createUserDto.dateOfBirth ?? null,
+    const existingUser: User = await this.usersRepository.findOne({
+      where: { phoneNumber: createUserDto.phoneNumber }
     });
 
-    if (createUserDto.documents){
-      await this.addDocumentsToUser(createUserDto.documents)
+    await this.isValidEmployeeType(createUserDto.employeeTypeId);
+
+    if (existingUser) {
+      throw new BadRequestException(
+        'User already exit or has request submitted'
+      );
+    }
+
+    const user: User = await this.usersRepository.save({
+      phoneNumber: createUserDto.phoneNumber,
+      password: createUserDto.password,
+      fullname: createUserDto.fullname,
+      dateOfBirth: createUserDto.dateOfBirth ?? null
+    });
+
+    if (createUserDto.documents) {
+      await this.addDocumentsToUser(createUserDto.documents);
     }
     return user;
   }
 
-  async addDocumentsToUser(documents:UserDocumentsDto):Promise<void> {
+  async addDocumentsToUser(documents: UserDocumentsDto): Promise<void> {
     const userDocumentsData = {
       birthCertificate: documents?.birthCertificate ?? null,
       militaryCertificate: documents?.militaryCertificate ?? null,
-      militaryCertificateExpiration: documents?.militaryCertificateExpiration ?? null,
+      militaryCertificateExpiration:
+        documents?.militaryCertificateExpiration ?? null,
       fish: documents?.fish ?? null,
       personalId: documents?.personalId ?? null,
       personalIdExpiration: documents?.personalIdExpiration ?? null,
@@ -154,13 +185,19 @@ export class UsersService {
       certificate_111: documents?.certificate_111 ?? null,
       toxicityReport: documents?.toxicityReport ?? null,
       kaabAlaamal: documents?.kaabAlaamal ?? null,
-      skillMeasurement: documents?.skillMeasurement ?? null,
+      skillMeasurement: documents?.skillMeasurement ?? null
     };
 
-    const hasValidData = Object.values(userDocumentsData).some(value => value !== null);
+    const hasValidData = Object.values(userDocumentsData).some(
+      (value) => value !== null
+    );
 
     if (hasValidData) {
       await this.userDocumentsRepository.save(userDocumentsData);
     }
+  }
+
+  async getEmployeeTypes(): Promise<EmployeeTypeEntity[]> {
+    return this.employeeTypeEntityRepository.find({});
   }
 }

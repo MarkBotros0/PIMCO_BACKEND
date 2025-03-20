@@ -3,7 +3,7 @@ import { MigrationInterface, QueryRunner } from "typeorm";
 export class AddEmployeeTypes1742144482289 implements MigrationInterface {
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`
-            INSERT INTO employee_type (type) VALUES 
+            INSERT INTO employee_type (name_ar) VALUES 
             ('رئيس مجلس الإدارة'),
             ('مدير عام الشركة'),
             ('مدير الادارة المالية'),

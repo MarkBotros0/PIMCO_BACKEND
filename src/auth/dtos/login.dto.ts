@@ -10,8 +10,8 @@ import { ApiProperty } from '@nestjs/swagger';
 export class LoginDto {
   @IsNotEmpty()
   @IsString()
-  @Matches(/^\+\d+$/, {
-    message: 'Phone Number must start with a "+" followed by digits only.'
+  @Matches(/^01\d+$/, {
+    message: 'Phone Number must start with "01" followed by digits only.'
   })
   @MaxLength(15, { message: 'maximum phone number length is 15' })
   @MinLength(5, { message: 'minimum phone number length is 5' })

@@ -6,7 +6,7 @@ export class AddEmployeeTypeEntity1742143275952 implements MigrationInterface {
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`ALTER TABLE "users" RENAME COLUMN "emplyee_type" TO "employee_type"`);
         await queryRunner.query(`ALTER TYPE "public"."users_emplyee_type_enum" RENAME TO "users_employee_type_enum"`);
-        await queryRunner.query(`CREATE TABLE "employee_type" ("id" SERIAL NOT NULL, "type" character varying(100) NOT NULL, CONSTRAINT "PK_f9d58855715d2ef972426e8bfef" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "employee_type" ("id" SERIAL NOT NULL, "name_ar" character varying(100) NOT NULL,"name_en" character varying(100), CONSTRAINT "PK_f9d58855715d2ef972426e8bfef" PRIMARY KEY ("id"))`);
         await queryRunner.query(`ALTER TABLE "users" DROP COLUMN "employee_type"`);
         await queryRunner.query(`ALTER TABLE "users" ADD "employee_type" integer`);
         await queryRunner.query(`ALTER TABLE "users" ADD CONSTRAINT "FK_ec7758057d79db05d0e1a0993f9" FOREIGN KEY ("employee_type") REFERENCES "employee_type"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);

@@ -5,7 +5,7 @@ import { UserRole } from '../../users/enums/user-roles.enum';
 export class NormalUserGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest();
-    const roles = request.user?.userRoles;
+    const roles = request.user?.roles;
 
     if (request.user && roles.includes(UserRole.NORMAL)) {
       request.isAdmin = false;

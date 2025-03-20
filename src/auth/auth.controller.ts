@@ -8,7 +8,6 @@ import {
 } from '@nestjs/common';
 import { RefreshTokenGuard } from './guards/refresh-token.guard';
 import { AuthService } from './services/auth.service';
-import { RegisterDto } from './dtos/register.dto';
 import { ApiBearerAuth, ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { AuthTokens } from './types/auth-tokens.type';
 import { LoginDto } from './dtos/login.dto';
@@ -16,6 +15,7 @@ import { TokenService } from './services/token.service';
 import { User } from '../users/entities/user.entity';
 import { UserView } from '../users/views/user.view';
 import { RefreshToken } from './decorators/refresh-token.decorator';
+import { CreateUserDto } from '../users/dtos/create-user.dto';
 
 @Controller('auth')
 @ApiSecurity('apiKey')
@@ -28,16 +28,9 @@ export class AuthController {
   ) {}
 
   @Post('register')
-  async registerUser(@Body() body: RegisterDto) {
-    const user: User = await this.authService.registerUser(body);
-    const tokens: AuthTokens = await this.tokenService.getTokens(
-      user.id,
-      user.phoneNumber
-    );
-    return {
-      tokens,
-      user: new UserView(user).render()
-    };
+  async registerUser(@Body() body: CreateUserDto) {
+    await this.authService.registerUser(body);
+    return { message: 'User request Submitted Successfully' };
   }
 
   @Post('login')

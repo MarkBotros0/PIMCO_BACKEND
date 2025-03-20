@@ -1,11 +1,14 @@
 import {
   IsDateString,
+  IsInt,
   IsNotEmpty,
   IsOptional,
-  IsString
+  IsString,
+  ValidateNested
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { UserDocumentsDto } from './user-documents.dto';
+import { Type } from 'class-transformer';
 
 export class CreateUserDto {
   @IsNotEmpty()
@@ -15,13 +18,27 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   @IsString()
+  @ApiProperty()
+  password: string;
+
+  @IsNotEmpty()
+  @IsString()
   @ApiProperty({ required: false })
   fullname: string;
+
+  @IsNotEmpty()
+  @IsInt()
+  @ApiProperty()
+  employeeTypeId: number;
 
   @IsOptional()
   @IsDateString()
   @ApiProperty({ required: false })
   dateOfBirth?: Date;
 
-  documents:UserDocumentsDto
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => UserDocumentsDto)
+  @ApiProperty({ type: () => UserDocumentsDto })
+  documents: UserDocumentsDto;
 }

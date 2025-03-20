@@ -9,10 +9,18 @@ export class EmployeeTypeEntity {
   @Column({
     type: 'varchar',
     length: 100,
-    name: 'type'
+    name: 'name_ar'
   })
-  type: string;
+  name_ar: string;
 
-  @OneToMany(() => User,(user) => user.employeeType)
+  @Column({
+    type: 'varchar',
+    length: 100,
+    name: 'name_en',
+    nullable: true
+  })
+  name_en: string;
+
+  @OneToMany(() => User, (user) => user.employeeType)
   users: User[];
 }
