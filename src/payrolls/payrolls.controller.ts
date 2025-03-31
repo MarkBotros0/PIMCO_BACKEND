@@ -1,34 +1,31 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Body, Patch, Param } from '@nestjs/common';
 import { PayrollsService } from './payrolls.service';
-import { CreatePayrollDto } from './dto/create-payroll.dto';
 import { UpdatePayrollDto } from './dto/update-payroll.dto';
 
 @Controller('payrolls')
 export class PayrollsController {
   constructor(private readonly payrollsService: PayrollsService) {}
 
-  @Post()
-  create(@Body() createPayrollDto: CreatePayrollDto) {
-    return this.payrollsService.create(createPayrollDto);
+  @Get('past')
+  async findAllPast() {
+    return this.payrollsService.findAllPast();
   }
 
-  @Get()
-  findAll() {
-    return this.payrollsService.findAll();
+  @Get('current')
+  async findAll() {
+    return this.payrollsService.findAllCurrent();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string) {
     return this.payrollsService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePayrollDto: UpdatePayrollDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() updatePayrollDto: UpdatePayrollDto
+  ) {
     return this.payrollsService.update(+id, updatePayrollDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.payrollsService.remove(+id);
   }
 }

@@ -2,7 +2,7 @@ import { User } from '../entities/user.entity';
 import { UserRole } from '../enums/user-roles.enum';
 import { DocumentsView } from './document.view';
 
-export class UserView {
+export class UserWithDocumentsView {
   constructor(private readonly data: User | User[]) {}
 
   render(): any {

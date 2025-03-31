@@ -12,6 +12,7 @@ import { BlacklistedRefreshToken } from '../../auth/entities/blacklisted-refresh
 import { EmployeeTypeEntity } from './employee-type.entity';
 import { UserDocuments } from './user-documents.entity';
 import { Payroll } from '../../payrolls/entities/payroll.entity';
+import { Site } from '../../sites/entities/site.entity';
 
 @Entity({ name: 'users' })
 export class User extends BaseEntity {
@@ -81,4 +82,8 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Payroll, (payroll) => payroll.user)
   payrolls: Payroll;
+
+  @ManyToOne(() => Site, (site) => site.users)
+  @JoinColumn({ name: 'site_id' })
+  site: Site;
 }

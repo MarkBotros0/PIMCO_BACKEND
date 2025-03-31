@@ -11,7 +11,7 @@ export class Payroll extends BaseEntity {
   year: number;
 
   @ManyToOne(() => User, (user) => user.payrolls, { onDelete: 'CASCADE' })
-  @JoinColumn()
+  @JoinColumn({ name: 'user_id' })
   user: User;
 
   @Column({ type: 'int', name: 'user_id' })

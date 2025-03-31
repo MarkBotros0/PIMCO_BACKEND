@@ -1,5 +1,6 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 import { BaseEntity } from '../../shared/entities/base.entity';
+import { User } from '../../users/entities/user.entity';
 
 @Entity({ name: 'site' })
 export class Site extends BaseEntity {
@@ -9,4 +10,14 @@ export class Site extends BaseEntity {
     name: 'name'
   })
   name: string;
+
+  @Column({
+    type: 'int',
+    name: 'working_hours_per_day',
+    default: 8
+  })
+  workingHrsPerDay: number;
+
+  @OneToMany(() => User, (user) => user.site, { onDelete: 'CASCADE' })
+  users: User[];
 }

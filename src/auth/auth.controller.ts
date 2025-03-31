@@ -13,7 +13,7 @@ import { AuthTokens } from './types/auth-tokens.type';
 import { LoginDto } from './dtos/login.dto';
 import { TokenService } from './services/token.service';
 import { User } from '../users/entities/user.entity';
-import { UserView } from '../users/views/user.view';
+import { UserWithDocumentsView } from '../users/views/user-with-documents.view';
 import { RefreshToken } from './decorators/refresh-token.decorator';
 import { CreateUserDto } from '../users/dtos/create-user.dto';
 
@@ -43,7 +43,7 @@ export class AuthController {
     );
     return {
       tokens,
-      user: new UserView(user).render()
+      user: new UserWithDocumentsView(user).render()
     };
   }
 

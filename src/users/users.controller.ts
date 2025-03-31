@@ -11,7 +11,7 @@ import { AccessTokenGuard } from '../auth/guards/access-token.guard';
 import { AdminGuard } from '../auth/guards/admin.guard';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
-import { UserView } from './views/user.view';
+import { UserWithDocumentsView } from './views/user-with-documents.view';
 import { User } from './entities/user.entity';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserId } from '../shared/decorators/user-id.decorator';
@@ -36,14 +36,14 @@ export class UsersController {
   @Get('hr')
   async getAllHr() {
     const users: User[] = await this.usersService.getAllHrForAdmin();
-    return new UserView(users).render();
+    return new UserWithDocumentsView(users).render();
   }
 
   @UseGuards(AccessTokenGuard, AdminOrHRGuard)
   @Get('requests')
   async getUserRequests() {
     const users: User[] = await this.usersService.getAllInActiveUsers();
-    return new UserView(users).render();
+    return new UserWithDocumentsView(users).render();
   }
 
   @Get('employee-types')
@@ -74,6 +74,6 @@ export class UsersController {
     @Body() updateUserDto: UpdateUserDto
   ) {
     const user: User = await this.usersService.update(userId, updateUserDto);
-    return new UserView(user).render();
+    return new UserWithDocumentsView(user).render();
   }
 }

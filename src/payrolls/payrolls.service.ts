@@ -1,26 +1,25 @@
 import { Injectable } from '@nestjs/common';
-import { CreatePayrollDto } from './dto/create-payroll.dto';
 import { UpdatePayrollDto } from './dto/update-payroll.dto';
 
 @Injectable()
 export class PayrollsService {
-  create(createPayrollDto: CreatePayrollDto) {
+  async submitPayrolls() {
     return 'This action adds a new payroll';
   }
 
-  findAll() {
+  async findAllPast() {
     return `This action returns all payrolls`;
   }
 
-  findOne(id: number) {
+  async findAllCurrent() {
+    return `This action returns all payrolls`;
+  }
+
+  async findOne(id: number) {
     return `This action returns a #${id} payroll`;
   }
 
-  update(id: number, updatePayrollDto: UpdatePayrollDto) {
+  async update(id: number, updatePayrollDto: UpdatePayrollDto) {
     return `This action updates a #${id} payroll`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} payroll`;
   }
 }
