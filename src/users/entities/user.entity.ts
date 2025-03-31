@@ -1,10 +1,17 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne
+} from 'typeorm';
 import { BaseEntity } from '../../shared/entities/base.entity';
 import { UserRole } from '../enums/user-roles.enum';
 import { BlacklistedRefreshToken } from '../../auth/entities/blacklisted-refresh-token.entity';
 import { EmployeeTypeEntity } from './employee-type.entity';
 import { UserDocuments } from './user-documents.entity';
-
+import { Payroll } from '../../payrolls/entities/payroll.entity';
 
 @Entity({ name: 'users' })
 export class User extends BaseEntity {
@@ -33,7 +40,7 @@ export class User extends BaseEntity {
   @Column({
     type: 'boolean',
     name: 'is_active',
-    default: false,
+    default: false
   })
   isActive: boolean;
 
@@ -42,7 +49,7 @@ export class User extends BaseEntity {
     name: 'user_roles',
     enum: UserRole,
     default: [UserRole.NORMAL],
-    array: true,
+    array: true
   })
   roles: UserRole[];
 
@@ -60,7 +67,7 @@ export class User extends BaseEntity {
   })
   address: string;
 
-  @ManyToOne(() => EmployeeTypeEntity,(type) => type.users,{nullable:true})
+  @ManyToOne(() => EmployeeTypeEntity, (type) => type.users, { nullable: true })
   @JoinColumn({ name: 'employee_type' })
   employeeType: EmployeeTypeEntity;
 
@@ -71,4 +78,7 @@ export class User extends BaseEntity {
 
   @OneToOne(() => UserDocuments, (documents) => documents.user)
   documents: UserDocuments;
+
+  @OneToMany(() => Payroll, (payroll) => payroll.user)
+  payrolls: Payroll;
 }

@@ -38,7 +38,10 @@ export class UsersService {
   }
 
   async findOneById(id: number): Promise<User> {
-    const user: User = await this.usersRepository.findOne({ where: { id } });
+    const user: User = await this.usersRepository.findOne({
+      relations: ['employeeType'],
+      where: { id }
+    });
 
     if (!user) {
       throw new NotFoundException(`User with id: ${id} is not found`);
@@ -163,12 +166,15 @@ export class UsersService {
     });
 
     if (createUserDto.documents) {
-      await this.addDocumentsToUser(createUserDto.documents);
+      await this.addDocumentsToUser(user, createUserDto.documents);
     }
     return user;
   }
 
-  async addDocumentsToUser(documents: UserDocumentsDto): Promise<void> {
+  async addDocumentsToUser(
+    user: User,
+    documents: UserDocumentsDto
+  ): Promise<void> {
     const userDocumentsData = {
       birthCertificate: documents?.birthCertificate ?? null,
       militaryCertificate: documents?.militaryCertificate ?? null,
@@ -193,7 +199,7 @@ export class UsersService {
     );
 
     if (hasValidData) {
-      await this.userDocumentsRepository.save(userDocumentsData);
+      await this.userDocumentsRepository.save({ user, ...userDocumentsData });
     }
   }
 

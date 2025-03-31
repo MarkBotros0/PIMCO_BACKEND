@@ -8,6 +8,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SitesModule } from './sites/sites.module';
+import { PayrollsModule } from './payrolls/payrolls.module';
 
 @Module({
   imports: [
@@ -18,7 +19,8 @@ import { SitesModule } from './sites/sites.module';
     DatabaseModule,
     AuthModule,
     UsersModule,
-    SitesModule
+    SitesModule,
+    PayrollsModule
   ],
   controllers: [AppController],
   providers: [AppService]
@@ -26,6 +28,5 @@ import { SitesModule } from './sites/sites.module';
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(LoggerMiddleware).forRoutes('*');
-
   }
 }

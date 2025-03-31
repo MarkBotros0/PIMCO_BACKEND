@@ -31,13 +31,15 @@ export class UserView {
       fullname: user.fullname,
       dateOfBirth: user.dateOfBirth,
       createdAt: user.createdAt,
-
+      employeeType: user.employeeType
     };
 
     return {
       ...userData,
       highestRole,
-      documents: user.documents ? new DocumentsView(user.documents).render() : {},
+      documents: user.documents
+        ? new DocumentsView(user.documents).render()
+        : {}
     };
   }
 }
