@@ -145,7 +145,7 @@ export class UsersService {
     return true;
   }
 
-  async createUserRequest(createUserDto: CreateUserDto) {
+  async createUser(createUserDto: CreateUserDto, isActive: boolean = false) {
     const existingUser: User = await this.usersRepository.findOne({
       where: { phoneNumber: createUserDto.phoneNumber }
     });
@@ -162,7 +162,8 @@ export class UsersService {
       phoneNumber: createUserDto.phoneNumber,
       password: createUserDto.password,
       fullname: createUserDto.fullname,
-      dateOfBirth: createUserDto.dateOfBirth ?? null
+      dateOfBirth: createUserDto.dateOfBirth ?? null,
+      isActive
     });
 
     if (createUserDto.documents) {
@@ -205,5 +206,9 @@ export class UsersService {
 
   async getEmployeeTypes(): Promise<EmployeeTypeEntity[]> {
     return this.employeeTypeEntityRepository.find({});
+  }
+
+  async createUserByAdmin(createUserDto: CreateUserDto): Promise<User> {
+    return this.createUser(createUserDto, true);
   }
 }

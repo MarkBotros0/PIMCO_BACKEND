@@ -18,6 +18,7 @@ import { UserId } from '../shared/decorators/user-id.decorator';
 import { AdminOrHRGuard } from '../auth/guards/admin-or-hr.guard';
 import { EmployeeTypeEntity } from './entities/employee-type.entity';
 import { EmployeeTypeView } from './views/employee-type.view';
+import { CreateUserDto } from './dtos/create-user.dto';
 
 @Controller('users')
 @ApiTags('users')
@@ -61,10 +62,10 @@ export class UsersController {
   }
 
   @UseGuards(AccessTokenGuard, AdminOrHRGuard)
-  @Post('request/reject/:userId')
-  async rejectUserRequest(@Param('userId') userId: number) {
-    await this.usersService.rejectUserRequest(userId);
-    return { message: 'User Request rejected successfully' };
+  @Post()
+  async createUserByAdmin(@Body() createUserDto: CreateUserDto) {
+    const user: User = await this.usersService.createUserByAdmin(createUserDto);
+    return new UserWithDocumentsView(user);
   }
 
   @UseGuards(AccessTokenGuard)

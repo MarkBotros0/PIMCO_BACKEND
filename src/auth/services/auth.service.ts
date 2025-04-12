@@ -19,7 +19,7 @@ export class AuthService {
 
   async registerUser(createUserDto: CreateUserDto): Promise<User> {
     createUserDto.password = await argon2.hash(createUserDto.password);
-    return await this.usersService.createUserRequest(createUserDto);
+    return await this.usersService.createUser(createUserDto);
   }
 
   async login(loginDto: LoginDto): Promise<User> {
