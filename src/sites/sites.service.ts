@@ -27,7 +27,6 @@ export class SitesService {
   async update(id: number, updateSiteDto: UpdateSiteDto): Promise<Site> {
     const site: Site = await this.siteRepository.findOne({ where: { id } });
     Object.assign(site, updateSiteDto);
-    console.log(site);
     await this.siteRepository.update(site.id, site);
     return this.findOne(site.id);
   }

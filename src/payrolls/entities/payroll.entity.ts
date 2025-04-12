@@ -44,6 +44,15 @@ export class Payroll extends BaseEntity {
     type: 'decimal',
     precision: 10,
     scale: 2,
+    name: 'daily_salary',
+    default: 0
+  })
+  dailySalary: number;
+
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
     name: 'total_attendance',
     default: 0
   })
@@ -152,19 +161,19 @@ export class Payroll extends BaseEntity {
     type: 'decimal',
     precision: 10,
     scale: 2,
-    name: 'net_salary',
+    name: 'total_salary',
     default: 0
   })
-  netSalary: number;
+  totalSalary: number;
 
   @Column({
     type: 'decimal',
     precision: 10,
     scale: 2,
-    name: 'total_salary',
+    name: 'net_salary',
     default: 0
   })
-  totalSalary: number;
+  netSalary: number;
 
   @Column({
     type: 'boolean',

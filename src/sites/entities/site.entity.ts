@@ -18,6 +18,13 @@ export class Site extends BaseEntity {
   })
   workingHrsPerDay: number;
 
+  @Column({
+    type: 'int',
+    name: 'contracted_days',
+    nullable: true
+  })
+  contractedDays: number;
+
   @OneToMany(() => User, (user) => user.site, { onDelete: 'CASCADE' })
   users: User[];
 }

@@ -19,7 +19,10 @@ async function bootstrap() {
   app.use(helmet({ crossOriginResourcePolicy: false }));
   app.useGlobalPipes(
     new ValidationPipe({
-      enableDebugMessages: true
+      enableDebugMessages: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true
     })
   );
 
