@@ -211,4 +211,8 @@ export class UsersService {
   async createUserByAdmin(createUserDto: CreateUserDto): Promise<User> {
     return this.createUser(createUserDto, true);
   }
+
+  async getAllEmployees(): Promise<User[]> {
+    return this.usersRepository.find({ relations: ['documents', 'site'] });
+  }
 }

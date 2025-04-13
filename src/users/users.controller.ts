@@ -41,6 +41,13 @@ export class UsersController {
   }
 
   @UseGuards(AccessTokenGuard, AdminOrHRGuard)
+  @Get()
+  async getAllEmployees() {
+    const users: User[] = await this.usersService.getAllEmployees();
+    return new UserWithDocumentsView(users).render();
+  }
+
+  @UseGuards(AccessTokenGuard, AdminOrHRGuard)
   @Get('requests')
   async getUserRequests() {
     const users: User[] = await this.usersService.getAllInActiveUsers();
@@ -58,6 +65,13 @@ export class UsersController {
   @Post('request/accept/:userId')
   async acceptUserRequest(@Param('userId') userId: number) {
     await this.usersService.acceptUserRequest(userId);
+    return { message: 'User Request accepted successfully' };
+  }
+
+  @UseGuards(AccessTokenGuard, AdminOrHRGuard)
+  @Post('request/reject/:userId')
+  async rejectUserRequest(@Param('userId') userId: number) {
+    await this.usersService.rejectUserRequest(userId);
     return { message: 'User Request accepted successfully' };
   }
 
