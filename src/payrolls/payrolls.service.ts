@@ -124,29 +124,27 @@ export class PayrollsService {
   }
 
   private applyFilters(query: PayrollQueryDto): Partial<Payroll> {
-    const { nameSearch, month, year, siteId } = query;
-
     const where: any = {
       isPast: true
     };
 
-    if (month) {
-      where.month = month;
+    if (query?.month) {
+      where.month = query.month;
     }
 
-    if (year) {
-      where.year = year;
+    if (query?.year) {
+      where.year = query.year;
     }
 
-    if (nameSearch || siteId) {
+    if (query?.nameSearch || query?.siteId) {
       where.user = {};
 
-      if (nameSearch) {
-        where.user.fullname = ILike(`%${nameSearch}%`);
+      if (query?.nameSearch) {
+        where.user.fullname = ILike(`%${query.nameSearch}%`);
       }
 
-      if (siteId) {
-        where.user.site = { id: siteId };
+      if (query?.siteId) {
+        where.user.site = { id: query.siteId };
       }
     }
     return where;
