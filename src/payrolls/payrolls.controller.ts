@@ -13,6 +13,8 @@ import { UpdatePayrollDto } from './dto/update-payroll.dto';
 import { AccessTokenGuard } from '../auth/guards/access-token.guard';
 import { PayrollQueryDto } from './dto/payroll-query.dto';
 import { AdminOrHRGuard } from '../auth/guards/admin-or-hr.guard';
+import { Payroll } from './entities/payroll.entity';
+import { PayrollView } from './views/payroll.view';
 
 @Controller('payrolls')
 export class PayrollsController {
@@ -21,25 +23,29 @@ export class PayrollsController {
   @UseGuards(AccessTokenGuard, AdminOrHRGuard)
   @Post('submit')
   async submitPayrolls() {
-    return this.payrollsService.submitPayrolls();
+    await this.payrollsService.submitPayrolls();
   }
 
   @UseGuards(AccessTokenGuard, AdminOrHRGuard)
   @Get('past')
   async findAllPast(@Query() query: PayrollQueryDto) {
-    return this.payrollsService.findAllPast(query);
+    const payrolls: Payroll[] = await this.payrollsService.findAllPast(query);
+    return new PayrollView(payrolls).render();
   }
 
   @UseGuards(AccessTokenGuard, AdminOrHRGuard)
   @Get('current')
   async findAll(@Query() query: PayrollQueryDto) {
-    return this.payrollsService.findAllCurrent(query);
+    const payrolls: Payroll[] =
+      await this.payrollsService.findAllCurrent(query);
+    return new PayrollView(payrolls).render();
   }
 
   @UseGuards(AccessTokenGuard, AdminOrHRGuard)
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    return this.payrollsService.findOne(+id);
+    const payroll: Payroll = await this.payrollsService.findOne(+id);
+    return new PayrollView(payroll).render();
   }
 
   @UseGuards(AccessTokenGuard, AdminOrHRGuard)
@@ -48,6 +54,10 @@ export class PayrollsController {
     @Param('id') id: string,
     @Body() updatePayrollDto: UpdatePayrollDto
   ) {
-    return this.payrollsService.update(+id, updatePayrollDto);
+    const payroll: Payroll = await this.payrollsService.update(
+      +id,
+      updatePayrollDto
+    );
+    return new PayrollView(payroll).render();
   }
 }

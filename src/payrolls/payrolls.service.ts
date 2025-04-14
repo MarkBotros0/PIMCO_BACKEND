@@ -119,6 +119,7 @@ export class PayrollsService {
     const where: Partial<Payroll> = this.applyFilters(query);
 
     return this.payrollRepository.find({
+      relations: ['user'],
       where
     });
   }
@@ -156,6 +157,7 @@ export class PayrollsService {
     const now = new Date();
 
     return this.payrollRepository.find({
+      relations: ['user'],
       where: {
         ...where,
         year: now.getFullYear(),
