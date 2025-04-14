@@ -2,6 +2,11 @@ import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { BaseEntity } from '../../shared/entities/base.entity';
 import { User } from '../../users/entities/user.entity';
 
+const DecimalToNumberTransformer = {
+  to: (value: number) => value,
+  from: (value: string) => parseFloat(value)
+};
+
 @Entity({ name: 'payrolls' })
 export class Payroll extends BaseEntity {
   @Column({ type: 'int', name: 'month' })
@@ -36,7 +41,8 @@ export class Payroll extends BaseEntity {
     precision: 10,
     scale: 2,
     name: 'overtime_in_hrs',
-    default: 0
+    default: 0,
+    transformer: DecimalToNumberTransformer
   })
   overtimeInHours: number;
 
@@ -45,7 +51,8 @@ export class Payroll extends BaseEntity {
     precision: 10,
     scale: 2,
     name: 'daily_salary',
-    default: 0
+    default: 0,
+    transformer: DecimalToNumberTransformer
   })
   dailySalary: number;
 
@@ -54,7 +61,8 @@ export class Payroll extends BaseEntity {
     precision: 10,
     scale: 2,
     name: 'total_attendance',
-    default: 0
+    default: 0,
+    transformer: DecimalToNumberTransformer
   })
   totalAttendance: number;
 
@@ -63,7 +71,8 @@ export class Payroll extends BaseEntity {
     precision: 10,
     scale: 2,
     name: 'income_tax',
-    default: 0
+    default: 0,
+    transformer: DecimalToNumberTransformer
   })
   incomeTax: number;
 
@@ -72,7 +81,8 @@ export class Payroll extends BaseEntity {
     precision: 10,
     scale: 2,
     name: 'penalties',
-    default: 0
+    default: 0,
+    transformer: DecimalToNumberTransformer
   })
   penalties: number;
 
@@ -81,7 +91,8 @@ export class Payroll extends BaseEntity {
     precision: 10,
     scale: 2,
     name: 'advances',
-    default: 0
+    default: 0,
+    transformer: DecimalToNumberTransformer
   })
   advances: number;
 
@@ -90,7 +101,8 @@ export class Payroll extends BaseEntity {
     precision: 10,
     scale: 2,
     name: 'social_insurance',
-    default: 0
+    default: 0,
+    transformer: DecimalToNumberTransformer
   })
   socialInsurance: number;
 
@@ -99,7 +111,8 @@ export class Payroll extends BaseEntity {
     precision: 10,
     scale: 2,
     name: 'total_deductions',
-    default: 0
+    default: 0,
+    transformer: DecimalToNumberTransformer
   })
   totalDeductions: number;
 
@@ -108,7 +121,8 @@ export class Payroll extends BaseEntity {
     precision: 10,
     scale: 2,
     name: 'medical',
-    default: 0
+    default: 0,
+    transformer: DecimalToNumberTransformer
   })
   medical: number;
 
@@ -117,7 +131,8 @@ export class Payroll extends BaseEntity {
     precision: 10,
     scale: 2,
     name: 'bonuses_and_allowances',
-    default: 0
+    default: 0,
+    transformer: DecimalToNumberTransformer
   })
   bonusesAndAllowances: number;
 
@@ -126,7 +141,8 @@ export class Payroll extends BaseEntity {
     precision: 10,
     scale: 2,
     name: 'transportation_allowance',
-    default: 0
+    default: 0,
+    transformer: DecimalToNumberTransformer
   })
   transportationAllowance: number;
 
@@ -135,7 +151,8 @@ export class Payroll extends BaseEntity {
     precision: 10,
     scale: 2,
     name: 'food_allowance',
-    default: 0
+    default: 0,
+    transformer: DecimalToNumberTransformer
   })
   foodAllowance: number;
 
@@ -144,7 +161,8 @@ export class Payroll extends BaseEntity {
     precision: 10,
     scale: 2,
     name: 'daily_difference',
-    default: 0
+    default: 0,
+    transformer: DecimalToNumberTransformer
   })
   dailyDifference: number;
 
@@ -153,7 +171,8 @@ export class Payroll extends BaseEntity {
     precision: 10,
     scale: 2,
     name: 'currency_difference',
-    default: 0
+    default: 0,
+    transformer: DecimalToNumberTransformer
   })
   currencyDifference: number;
 
@@ -162,7 +181,8 @@ export class Payroll extends BaseEntity {
     precision: 10,
     scale: 2,
     name: 'total_salary',
-    default: 0
+    default: 0,
+    transformer: DecimalToNumberTransformer
   })
   totalSalary: number;
 
@@ -171,7 +191,8 @@ export class Payroll extends BaseEntity {
     precision: 10,
     scale: 2,
     name: 'net_salary',
-    default: 0
+    default: 0,
+    transformer: DecimalToNumberTransformer
   })
   netSalary: number;
 

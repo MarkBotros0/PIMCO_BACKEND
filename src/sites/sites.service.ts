@@ -13,6 +13,13 @@ export class SitesService {
   ) {}
 
   async create(createSiteDto: CreateSiteDto): Promise<Site> {
+    if (!createSiteDto.contractedDays) {
+      createSiteDto.contractedDays = 15;
+    }
+    if (!createSiteDto.workingHrsPerDay) {
+      createSiteDto.workingHrsPerDay = 8;
+    }
+
     return this.siteRepository.save({ ...createSiteDto });
   }
 

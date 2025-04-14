@@ -50,12 +50,12 @@ export class PayrollsService {
     await this.payrollRepository.save(payrolls);
   }
 
-  private calculateTotalDeductions(payroll: Payroll) {
+  private calculateTotalDeductions(payroll: Payroll): number {
     const { incomeTax, penalties, advances, socialInsurance } = payroll;
     return incomeTax + penalties + advances + socialInsurance;
   }
 
-  private calculateTotalSalary(payroll: Payroll) {
+  private calculateTotalSalary(payroll: Payroll): number {
     const {
       currencyDifference,
       foodAllowance,
@@ -72,37 +72,33 @@ export class PayrollsService {
       transportationAllowance +
       bonusesAndAllowances +
       medical;
-    const workingSalary: number = totalAttendance * dailySalary;
 
+    const workingSalary: number = totalAttendance * dailySalary;
     return additionalSalary + workingSalary;
   }
 
-  private calculateDailyDifference(payroll: Payroll) {
-    const siteContractedDays: number = payroll?.user?.site.contractedDays;
-    if (siteContractedDays) {
-      return (payroll.attendance - siteContractedDays) * 0.4;
-    }
-    return 0;
+  private calculateDailyDifference(payroll: Payroll): number {
+    const siteContractedDays: number =
+      payroll?.user?.site?.contractedDays || 15;
+
+    return (payroll.attendance - siteContractedDays) * 0.4;
   }
 
-  private calculateTotalAttendance(payroll: Payroll) {
-    const workingHours: number = payroll?.user?.site?.workingHrsPerDay;
-    if (workingHours) {
-      return payroll.overtimeInHours / workingHours + payroll.attendance;
-    }
-    return payroll.attendance;
+  private calculateTotalAttendance(payroll: Payroll): number {
+    const workingHours: number = payroll?.user?.site?.workingHrsPerDay || 8;
+    return payroll.overtimeInHours / workingHours + payroll.attendance;
   }
 
-  private calculateCurrencyDifference(payroll: Payroll) {
+  private calculateCurrencyDifference(payroll: Payroll): number {
     if (payroll.dailyDifference) {
       return payroll.dailySalary * payroll.dailyDifference;
     }
     return 0;
   }
 
-  private calculateNetSalary(payroll: Payroll) {
-    const { netSalary, totalDeductions } = payroll;
-    return netSalary + totalDeductions;
+  private calculateNetSalary(payroll: Payroll): number {
+    const { totalSalary, totalDeductions } = payroll;
+    return totalSalary - totalDeductions;
   }
 
   private processPayroll(payroll: Payroll): Payroll {
@@ -110,8 +106,8 @@ export class PayrollsService {
     payroll.totalDeductions = this.calculateTotalDeductions(payroll);
     payroll.dailyDifference = this.calculateDailyDifference(payroll);
     payroll.currencyDifference = this.calculateCurrencyDifference(payroll);
-    payroll.netSalary = this.calculateNetSalary(payroll);
     payroll.totalSalary = this.calculateTotalSalary(payroll);
+    payroll.netSalary = this.calculateNetSalary(payroll);
     return payroll;
   }
 
