@@ -39,7 +39,7 @@ export class UsersService {
 
   async findOneById(id: number): Promise<User> {
     const user: User = await this.usersRepository.findOne({
-      relations: ['employeeType'],
+      relations: ['employeeType', 'documents'],
       where: { id }
     });
 

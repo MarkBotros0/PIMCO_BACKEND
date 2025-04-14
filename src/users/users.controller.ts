@@ -5,6 +5,7 @@ import {
   Param,
   Patch,
   Post,
+  Req,
   UseGuards
 } from '@nestjs/common';
 import { AccessTokenGuard } from '../auth/guards/access-token.guard';
@@ -19,6 +20,8 @@ import { AdminOrHRGuard } from '../auth/guards/admin-or-hr.guard';
 import { EmployeeTypeEntity } from './entities/employee-type.entity';
 import { EmployeeTypeView } from './views/employee-type.view';
 import { CreateUserDto } from './dtos/create-user.dto';
+import { Request } from 'express';
+import { NormalUserGuard } from '../auth/guards/normal-user.guard';
 
 @Controller('users')
 @ApiTags('users')
@@ -38,6 +41,14 @@ export class UsersController {
   async getAllHr() {
     const users: User[] = await this.usersService.getAllHrForAdmin();
     return new UserWithDocumentsView(users).render();
+  }
+
+  @UseGuards(AccessTokenGuard, NormalUserGuard)
+  @Get('me')
+  async getUserData(@Req() req: any) {
+    const userId: number = req?.user?.id;
+    const user: User = await this.usersService.findOneById(userId);
+    return new UserWithDocumentsView(user).render();
   }
 
   @UseGuards(AccessTokenGuard, AdminOrHRGuard)
