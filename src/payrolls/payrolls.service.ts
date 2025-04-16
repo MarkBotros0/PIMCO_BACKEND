@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { UpdatePayrollDto } from './dto/update-payroll.dto';
 import { Payroll } from './entities/payroll.entity';
 import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
@@ -25,7 +25,11 @@ export class PayrollsService {
   }
 
   private async createPayrollForAllUsers(): Promise<Payroll[]> {
-    const users: User[] = await this.entityManager.find(User);
+    const users: User[] = await this.entityManager.find(User, {
+      where: {
+        isActive: true
+      }
+    });
 
     const now = new Date();
     const payrolls: Payroll[] = users.map((user) => {
@@ -37,6 +41,17 @@ export class PayrollsService {
     });
 
     return await this.payrollRepository.save(payrolls);
+  }
+
+  async createPayrollForUser(user: User): Promise<Payroll> {
+    const now = new Date();
+    const payroll: Payroll = this.payrollRepository.create({
+      user,
+      year: now.getFullYear(),
+      month: now.getMonth() + 1
+    });
+
+    return this.payrollRepository.save(payroll);
   }
 
   private async markPayrollsAsPast(): Promise<void> {

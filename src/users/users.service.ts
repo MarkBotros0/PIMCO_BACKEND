@@ -12,6 +12,7 @@ import { CreateUserDto } from './dtos/create-user.dto';
 import { UserDocuments } from './entities/user-documents.entity';
 import { UserDocumentsDto } from './dtos/user-documents.dto';
 import { EmployeeTypeEntity } from './entities/employee-type.entity';
+import { PayrollsService } from '../payrolls/payrolls.service';
 
 @Injectable()
 export class UsersService {
@@ -21,7 +22,8 @@ export class UsersService {
     @InjectRepository(UserDocuments)
     private readonly userDocumentsRepository: Repository<UserDocuments>,
     @InjectRepository(EmployeeTypeEntity)
-    private readonly employeeTypeEntityRepository: Repository<EmployeeTypeEntity>
+    private readonly employeeTypeEntityRepository: Repository<EmployeeTypeEntity>,
+    private readonly payrollsService: PayrollsService
   ) {}
 
   async findOneByPhoneNumber(phoneNumber: string): Promise<User> {
@@ -123,6 +125,7 @@ export class UsersService {
     }
     user.isActive = true;
     await this.usersRepository.save(user);
+    await this.payrollsService.createPayrollForUser(user);
   }
 
   async rejectUserRequest(userId: number): Promise<void> {
@@ -209,7 +212,9 @@ export class UsersService {
   }
 
   async createUserByAdmin(createUserDto: CreateUserDto): Promise<User> {
-    return this.createUser(createUserDto, true);
+    const user: User = await this.createUser(createUserDto, true);
+    await this.payrollsService.createPayrollForUser(user);
+    return user;
   }
 
   async getAllEmployees(): Promise<User[]> {
