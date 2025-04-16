@@ -15,8 +15,10 @@ import { PayrollQueryDto } from './dto/payroll-query.dto';
 import { AdminOrHRGuard } from '../auth/guards/admin-or-hr.guard';
 import { Payroll } from './entities/payroll.entity';
 import { PayrollView } from './views/payroll.view';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('payrolls')
+@ApiBearerAuth()
 export class PayrollsController {
   constructor(private readonly payrollsService: PayrollsService) {}
 

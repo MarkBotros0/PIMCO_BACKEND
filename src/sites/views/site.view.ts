@@ -15,7 +15,10 @@ export class SiteView {
 
     const siteData: Partial<Site> = {
       id: site.id,
-      name: site.name
+      name: site.name,
+      workingHrsPerDay: site.workingHrsPerDay,
+      contractedDays: site.contractedDays,
+      createdAt: site.createdAt
     };
 
     return {

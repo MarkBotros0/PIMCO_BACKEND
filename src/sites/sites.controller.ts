@@ -15,8 +15,10 @@ import { Site } from './entities/site.entity';
 import { SiteView } from './views/site.view';
 import { AccessTokenGuard } from '../auth/guards/access-token.guard';
 import { AdminOrHRGuard } from '../auth/guards/admin-or-hr.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('sites')
+@ApiBearerAuth()
 export class SitesController {
   constructor(private readonly sitesService: SitesService) {}
 
