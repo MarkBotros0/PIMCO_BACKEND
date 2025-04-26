@@ -20,8 +20,9 @@ import { AdminOrHRGuard } from '../auth/guards/admin-or-hr.guard';
 import { EmployeeTypeEntity } from './entities/employee-type.entity';
 import { EmployeeTypeView } from './views/employee-type.view';
 import { CreateUserDto } from './dtos/create-user.dto';
-import { Request } from 'express';
 import { NormalUserGuard } from '../auth/guards/normal-user.guard';
+import { UserView } from './views/user.view';
+import { UserWithDocumentsAndSalaryDetailsView } from './views/user-with-documents-salary-details.view';
 
 @Controller('users')
 @ApiTags('users')
@@ -40,7 +41,7 @@ export class UsersController {
   @Get('hr')
   async getAllHr() {
     const users: User[] = await this.usersService.getAllHrForAdmin();
-    return new UserWithDocumentsView(users).render();
+    return new UserView(users).render();
   }
 
   @UseGuards(AccessTokenGuard, NormalUserGuard)
@@ -55,7 +56,7 @@ export class UsersController {
   @Get()
   async getAllEmployees() {
     const users: User[] = await this.usersService.getAllEmployees();
-    return new UserWithDocumentsView(users).render();
+    return new UserWithDocumentsAndSalaryDetailsView(users).render();
   }
 
   @UseGuards(AccessTokenGuard, AdminOrHRGuard)

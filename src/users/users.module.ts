@@ -6,10 +6,16 @@ import { User } from './entities/user.entity';
 import { UserDocuments } from './entities/user-documents.entity';
 import { EmployeeTypeEntity } from './entities/employee-type.entity';
 import { PayrollsModule } from '../payrolls/payrolls.module';
+import { SalaryDetails } from './entities/salary-details.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, UserDocuments, EmployeeTypeEntity]),
+    TypeOrmModule.forFeature([
+      User,
+      UserDocuments,
+      EmployeeTypeEntity,
+      SalaryDetails
+    ]),
     PayrollsModule
   ],
   controllers: [UsersController],

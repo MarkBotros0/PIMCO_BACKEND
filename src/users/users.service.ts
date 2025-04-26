@@ -13,6 +13,7 @@ import { UserDocuments } from './entities/user-documents.entity';
 import { UserDocumentsDto } from './dtos/user-documents.dto';
 import { EmployeeTypeEntity } from './entities/employee-type.entity';
 import { PayrollsService } from '../payrolls/payrolls.service';
+import { SalaryDetails } from './entities/salary-details.entity';
 
 @Injectable()
 export class UsersService {
@@ -23,6 +24,8 @@ export class UsersService {
     private readonly userDocumentsRepository: Repository<UserDocuments>,
     @InjectRepository(EmployeeTypeEntity)
     private readonly employeeTypeEntityRepository: Repository<EmployeeTypeEntity>,
+    @InjectRepository(SalaryDetails)
+    private readonly salaryDetailsRepository: Repository<SalaryDetails>,
     private readonly payrollsService: PayrollsService
   ) {}
 
@@ -41,7 +44,7 @@ export class UsersService {
 
   async findOneById(id: number): Promise<User> {
     const user: User = await this.usersRepository.findOne({
-      relations: ['employeeType', 'documents'],
+      relations: ['employeeType', 'documents', 'salaryDetails'],
       where: { id }
     });
 
@@ -69,12 +72,23 @@ export class UsersService {
   }
 
   async update(userId: number, updateUserDto: UpdateUserDto): Promise<User> {
-    const user = await this.findOneById(userId);
+    const user: User = await this.findOneById(userId);
 
-    const { phoneNumber, documents, ...updateData } = updateUserDto;
+    const { phoneNumber, documents, salaryDetails, ...updateData } =
+      updateUserDto;
 
     Object.assign(user, updateData);
     await this.usersRepository.update(user.id, updateData);
+
+    if (documents) {
+      // Object.assign(user.documents, documents);
+      await this.userDocumentsRepository.update(user.id, documents);
+    }
+
+    if (salaryDetails) {
+      // Object.assign(user, updateData);
+      await this.salaryDetailsRepository.update(user.id, salaryDetails);
+    }
 
     return this.findOneById(user.id);
   }
@@ -148,7 +162,10 @@ export class UsersService {
     return true;
   }
 
-  async createUser(createUserDto: CreateUserDto, isActive: boolean = false) {
+  async createUser(
+    createUserDto: CreateUserDto,
+    isActive: boolean = false
+  ): Promise<User> {
     const existingUser: User = await this.usersRepository.findOne({
       where: { phoneNumber: createUserDto.phoneNumber }
     });
@@ -168,6 +185,8 @@ export class UsersService {
       dateOfBirth: createUserDto.dateOfBirth ?? null,
       isActive
     });
+
+    await this.salaryDetailsRepository.save({ user });
 
     if (createUserDto.documents) {
       await this.addDocumentsToUser(user, createUserDto.documents);

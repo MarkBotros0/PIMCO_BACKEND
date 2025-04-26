@@ -13,6 +13,7 @@ import { EmployeeTypeEntity } from './employee-type.entity';
 import { UserDocuments } from './user-documents.entity';
 import { Payroll } from '../../payrolls/entities/payroll.entity';
 import { Site } from '../../sites/entities/site.entity';
+import { SalaryDetails } from './salary-details.entity';
 
 @Entity({ name: 'users' })
 export class User extends BaseEntity {
@@ -86,4 +87,7 @@ export class User extends BaseEntity {
   @ManyToOne(() => Site, (site) => site.users)
   @JoinColumn({ name: 'site_id' })
   site: Site;
+
+  @OneToOne(() => SalaryDetails, (sd) => sd.user)
+  salaryDetails: SalaryDetails;
 }

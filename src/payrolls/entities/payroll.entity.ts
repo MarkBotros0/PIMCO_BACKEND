@@ -1,11 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { BaseEntity } from '../../shared/entities/base.entity';
 import { User } from '../../users/entities/user.entity';
-
-const DecimalToNumberTransformer = {
-  to: (value: number) => value,
-  from: (value: string) => parseFloat(value)
-};
+import { DecimalToNumberTransformer } from '../../shared/transformers/deccimal-to-number';
 
 @Entity({ name: 'payrolls' })
 export class Payroll extends BaseEntity {
