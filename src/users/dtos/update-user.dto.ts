@@ -9,7 +9,7 @@ import { SalaryDetailsDto } from './salary-details.dto';
 export class UpdateUserDto extends PartialType(CreateUserDto) {
   @IsOptional()
   @ValidateNested()
-  @Type(() => UserDocumentsDto)
-  @ApiProperty({ type: () => UserDocumentsDto })
+  @Type(() => SalaryDetailsDto)
+  @ApiProperty({ type: () => SalaryDetailsDto })
   salaryDetails?: SalaryDetailsDto;
 }

@@ -7,11 +7,11 @@ import {
 export const UserId = createParamDecorator(
   (data: any, ctx: ExecutionContext): number | undefined => {
     const request = ctx.switchToHttp().getRequest();
-    if (request?.user) {
-      return request.user.id;
-    }
+    const userId =
+      request.user?.id || request.body?.userId || request.params?.userId;
+
     throw new BadRequestException(
-      'Instructor role must be signed in or admin must add instructorId in the body.'
+      'User role must be signed in or admin must add instructorId in the body.'
     );
   }
 );

@@ -74,20 +74,26 @@ export class UsersService {
   async update(userId: number, updateUserDto: UpdateUserDto): Promise<User> {
     const user: User = await this.findOneById(userId);
 
-    const { phoneNumber, documents, salaryDetails, ...updateData } =
-      updateUserDto;
+    const {
+      phoneNumber,
+      password,
+      documents,
+      salaryDetails,
+      ...updateUserData
+    } = updateUserDto;
 
-    Object.assign(user, updateData);
-    await this.usersRepository.update(user.id, updateData);
+    Object.assign(user, updateUserData);
+    await this.usersRepository.update(user.id, updateUserData);
 
     if (documents) {
-      // Object.assign(user.documents, documents);
-      await this.userDocumentsRepository.update(user.id, documents);
+      await this.userDocumentsRepository.update(user.documents.id, documents);
     }
 
     if (salaryDetails) {
-      // Object.assign(user, updateData);
-      await this.salaryDetailsRepository.update(user.id, salaryDetails);
+      await this.salaryDetailsRepository.update(
+        user.salaryDetails.id,
+        salaryDetails
+      );
     }
 
     return this.findOneById(user.id);
@@ -233,7 +239,7 @@ export class UsersService {
   async createUserByAdmin(createUserDto: CreateUserDto): Promise<User> {
     const user: User = await this.createUser(createUserDto, true);
     await this.payrollsService.createPayrollForUser(user);
-    return user;
+    return this.findOneById(user.id);
   }
 
   async getAllEmployees(): Promise<User[]> {

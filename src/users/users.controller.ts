@@ -15,7 +15,6 @@ import { UsersService } from './users.service';
 import { UserWithDocumentsView } from './views/user-with-documents.view';
 import { User } from './entities/user.entity';
 import { UpdateUserDto } from './dtos/update-user.dto';
-import { UserId } from '../shared/decorators/user-id.decorator';
 import { AdminOrHRGuard } from '../auth/guards/admin-or-hr.guard';
 import { EmployeeTypeEntity } from './entities/employee-type.entity';
 import { EmployeeTypeView } from './views/employee-type.view';
@@ -50,6 +49,23 @@ export class UsersController {
     const userId: number = req?.user?.id;
     const user: User = await this.usersService.findOneById(userId);
     return new UserWithDocumentsView(user).render();
+  }
+
+  @UseGuards(AccessTokenGuard, AdminOrHRGuard)
+  @Get(':userId')
+  async getUserDataById(@Req() req: any, @Param('userId') userId: number) {
+    const user: User = await this.usersService.findOneById(userId);
+    return new UserWithDocumentsAndSalaryDetailsView(user).render();
+  }
+
+  @UseGuards(AccessTokenGuard, AdminOrHRGuard)
+  @Patch(':userId')
+  async updateProfile(
+    @Param('userId') userId: number,
+    @Body() updateUserDto: UpdateUserDto
+  ) {
+    const user: User = await this.usersService.update(userId, updateUserDto);
+    return new UserWithDocumentsAndSalaryDetailsView(user).render();
   }
 
   @UseGuards(AccessTokenGuard, AdminOrHRGuard)
@@ -92,15 +108,5 @@ export class UsersController {
   async createUserByAdmin(@Body() createUserDto: CreateUserDto) {
     const user: User = await this.usersService.createUserByAdmin(createUserDto);
     return new UserWithDocumentsView(user);
-  }
-
-  @UseGuards(AccessTokenGuard)
-  @Patch()
-  async updateProfile(
-    @UserId() userId: number,
-    @Body() updateUserDto: UpdateUserDto
-  ) {
-    const user: User = await this.usersService.update(userId, updateUserDto);
-    return new UserWithDocumentsView(user).render();
   }
 }

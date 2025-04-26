@@ -26,6 +26,7 @@ export class PayrollsService {
 
   private async createPayrollForAllUsers(): Promise<Payroll[]> {
     const users: User[] = await this.entityManager.find(User, {
+      relations: ['salaryDetails'],
       where: {
         isActive: true
       }
@@ -33,11 +34,21 @@ export class PayrollsService {
 
     const now = new Date();
     const payrolls: Payroll[] = users.map((user) => {
-      return this.payrollRepository.create({
+      const payroll: Payroll = this.payrollRepository.create({
         user,
         year: now.getFullYear(),
-        month: now.getMonth() + 1
+        month: now.getMonth() + 1,
+        dailySalary: user.salaryDetails?.dailySalary ?? 0,
+        medical: user.salaryDetails?.medical ?? 0,
+        incomeTax: user.salaryDetails?.incomeTax ?? 0,
+        foodAllowance: user.salaryDetails?.foodAllowance ?? 0,
+        socialInsurance: user.salaryDetails?.socialInsurance ?? 0,
+        transportationAllowance:
+          user.salaryDetails?.transportationAllowance ?? 0
       });
+
+      this.processPayroll(payroll);
+      return payroll;
     });
 
     return await this.payrollRepository.save(payrolls);
