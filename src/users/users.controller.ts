@@ -52,6 +52,13 @@ export class UsersController {
   }
 
   @UseGuards(AccessTokenGuard, AdminOrHRGuard)
+  @Get('requests')
+  async getUserRequests() {
+    const users: User[] = await this.usersService.getAllInActiveUsers();
+    return new UserWithDocumentsView(users).render();
+  }
+
+  @UseGuards(AccessTokenGuard, AdminOrHRGuard)
   @Get(':userId')
   async getUserDataById(@Req() req: any, @Param('userId') userId: number) {
     const user: User = await this.usersService.findOneById(userId);
@@ -73,13 +80,6 @@ export class UsersController {
   async getAllEmployees() {
     const users: User[] = await this.usersService.getAllEmployees();
     return new UserWithDocumentsAndSalaryDetailsView(users).render();
-  }
-
-  @UseGuards(AccessTokenGuard, AdminOrHRGuard)
-  @Get('requests')
-  async getUserRequests() {
-    const users: User[] = await this.usersService.getAllInActiveUsers();
-    return new UserWithDocumentsView(users).render();
   }
 
   @Get('employee-types')
