@@ -13,8 +13,12 @@ async function bootstrap() {
     rawBody: true
   });
 
+  // app.enableCors({
+  //   origin: 'https://pmico.vercel.app',
+  //   credentials: true
+  // });
   app.enableCors({
-    origin: 'https://pmico.vercel.app', // replace with your frontend
+    origin: true,
     credentials: true
   });
   app.useGlobalFilters(new HttpExceptionFilter());
