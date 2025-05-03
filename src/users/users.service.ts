@@ -180,7 +180,7 @@ export class UsersService {
 
     if (existingUser) {
       throw new BadRequestException(
-        'User already exit or has request submitted'
+        'User already exist or has request submitted'
       );
     }
 
@@ -243,6 +243,8 @@ export class UsersService {
   }
 
   async getAllEmployees(): Promise<User[]> {
-    return this.usersRepository.find({ relations: ['documents', 'site'] });
+    return this.usersRepository.find({
+      relations: ['documents', 'site', 'salaryDetails']
+    });
   }
 }
