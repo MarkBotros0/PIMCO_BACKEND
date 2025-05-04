@@ -5,6 +5,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Req,
   UseGuards
 } from '@nestjs/common';
@@ -22,6 +23,7 @@ import { CreateUserDto } from './dtos/create-user.dto';
 import { NormalUserGuard } from '../auth/guards/normal-user.guard';
 import { UserView } from './views/user.view';
 import { UserWithDocumentsAndSalaryDetailsView } from './views/user-with-documents-salary-details.view';
+import { UsersQueryDto } from './dtos/users-query.dto';
 
 @Controller('users')
 @ApiTags('users')
@@ -84,9 +86,16 @@ export class UsersController {
 
   @UseGuards(AccessTokenGuard, AdminOrHRGuard)
   @Get()
-  async getAllEmployees() {
-    const users: User[] = await this.usersService.getAllEmployees();
+  async getAllEmployees(@Query() query: UsersQueryDto) {
+    const users: User[] = await this.usersService.getAllEmployees(query);
     return new UserWithDocumentsAndSalaryDetailsView(users).render();
+  }
+
+  @UseGuards(AccessTokenGuard, AdminOrHRGuard)
+  @Post('fix')
+  async fix() {
+    await this.usersService.fix();
+    return { message: 'success' };
   }
 
   @UseGuards(AccessTokenGuard, AdminOrHRGuard)

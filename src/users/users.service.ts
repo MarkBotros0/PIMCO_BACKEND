@@ -14,6 +14,7 @@ import { UserDocumentsDto } from './dtos/user-documents.dto';
 import { EmployeeTypeEntity } from './entities/employee-type.entity';
 import { PayrollsService } from '../payrolls/payrolls.service';
 import { SalaryDetails } from './entities/salary-details.entity';
+import { UsersQueryDto } from './dtos/users-query.dto';
 
 @Injectable()
 export class UsersService {
@@ -242,9 +243,27 @@ export class UsersService {
     return this.findOneById(user.id);
   }
 
-  async getAllEmployees(): Promise<User[]> {
+  async getAllEmployees(query: UsersQueryDto): Promise<User[]> {
+    const { limit, page } = query;
     return this.usersRepository.find({
-      relations: ['documents', 'site', 'salaryDetails']
+      relations: ['documents', 'site', 'salaryDetails'],
+      where: { isActive: true },
+      skip: limit * page,
+      take: limit
     });
+  }
+
+  async fix() {
+    const users: User[] = await this.usersRepository.find({
+      relations: ['salaryDetails']
+    });
+
+    await Promise.all(
+      users.map(async (user: User) => {
+        if (!user.salaryDetails) {
+          await this.salaryDetailsRepository.save({ user });
+        }
+      })
+    );
   }
 }
