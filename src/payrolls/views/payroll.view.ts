@@ -1,5 +1,7 @@
 import { Payroll } from '../entities/payroll.entity';
 import { UserWithSiteView } from '../../users/views/user-with-site.view';
+import { UserWithDocumentsAndSalaryDetailsView } from '../../users/views/user-with-documents-salary-details.view';
+import { SiteView } from '../../sites/views/site.view';
 
 export class PayrollView {
   constructor(private readonly data: Payroll | Payroll[]) {}
@@ -39,7 +41,8 @@ export class PayrollView {
 
     return {
       ...payrollData,
-      user: new UserWithSiteView(payroll.user)
+      user: new UserWithDocumentsAndSalaryDetailsView(payroll.user).render(),
+      site: new SiteView(payroll.user?.site).render()
     };
   }
 }

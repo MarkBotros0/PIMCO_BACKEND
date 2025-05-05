@@ -219,13 +219,19 @@ export class PayrollsService {
     const now = new Date();
 
     return this.payrollRepository.find({
-      relations: ['user'],
+      relations: ['user.salaryDetails', 'user.site', 'user.employeeType'],
       where: {
         ...where,
         year: now.getFullYear(),
         month: now.getMonth() + 1,
         isPast: false
-      }
+      },
+      ...(query?.page && query?.limit
+        ? {
+            skip: query.page * query.limit,
+            take: query.limit
+          }
+        : {})
     });
   }
 

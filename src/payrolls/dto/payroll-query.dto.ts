@@ -1,8 +1,9 @@
 import { IsInt, IsOptional, IsString } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
+import { TableQueryDto } from '../../shared/dtos/table-query.dto';
 
-export class PayrollQueryDto {
+export class PayrollQueryDto extends TableQueryDto {
   @IsOptional()
   @IsString()
   @ApiProperty({ required: false })
