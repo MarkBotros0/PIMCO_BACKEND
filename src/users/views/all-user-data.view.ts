@@ -4,7 +4,7 @@ import { DocumentsView } from './document.view';
 import { SalaryDetailsView } from './salary-details.view';
 import { SiteView } from '../../sites/views/site.view';
 
-export class UserWithDocumentsAndSalaryDetailsView {
+export class AllUserDataView {
   constructor(private readonly data: User | User[]) {}
 
   render(): any {

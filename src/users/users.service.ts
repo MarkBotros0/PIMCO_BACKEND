@@ -83,11 +83,16 @@ export class UsersService {
       password,
       documents,
       salaryDetails,
+      siteId,
       ...updateUserData
     } = updateUserDto;
 
+    if (siteId) {
+      user.site = await this.sitesService.findOne(siteId);
+    }
+
     Object.assign(user, updateUserData);
-    await this.usersRepository.update(user.id, updateUserData);
+    await this.usersRepository.save(user);
 
     if (documents) {
       await this.userDocumentsRepository.update(user.documents.id, documents);

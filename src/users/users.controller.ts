@@ -25,6 +25,7 @@ import { UserView } from './views/user.view';
 import { UserWithDocumentsAndSalaryDetailsView } from './views/user-with-documents-salary-details.view';
 import { UsersQueryDto } from './dtos/users-query.dto';
 import { UserWithSiteView } from './views/user-with-site.view';
+import { AllUserDataView } from './views/all-user-data.view';
 
 @Controller('users')
 @ApiTags('users')
@@ -82,7 +83,7 @@ export class UsersController {
     @Body() updateUserDto: UpdateUserDto
   ) {
     const user: User = await this.usersService.update(userId, updateUserDto);
-    return new UserWithDocumentsAndSalaryDetailsView(user).render();
+    return new AllUserDataView(user).render();
   }
 
   @UseGuards(AccessTokenGuard, AdminOrHRGuard)
