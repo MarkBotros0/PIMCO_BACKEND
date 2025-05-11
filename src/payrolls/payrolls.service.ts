@@ -215,7 +215,6 @@ export class PayrollsService {
 
   async findAllCurrent(query?: PayrollQueryDto): Promise<Payroll[]> {
     const where: Partial<Payroll> = this.applyFilters(query);
-
     const now = new Date();
 
     return this.payrollRepository.find({
