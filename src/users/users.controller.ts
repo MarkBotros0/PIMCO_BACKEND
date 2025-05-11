@@ -24,6 +24,7 @@ import { NormalUserGuard } from '../auth/guards/normal-user.guard';
 import { UserView } from './views/user.view';
 import { UserWithDocumentsAndSalaryDetailsView } from './views/user-with-documents-salary-details.view';
 import { UsersQueryDto } from './dtos/users-query.dto';
+import { UserWithSiteView } from './views/user-with-site.view';
 
 @Controller('users')
 @ApiTags('users')
@@ -116,6 +117,6 @@ export class UsersController {
   @Post()
   async createUserByAdmin(@Body() createUserDto: CreateUserDto) {
     const user: User = await this.usersService.createUserByAdmin(createUserDto);
-    return new UserWithDocumentsView(user);
+    return new UserWithSiteView(user).render();
   }
 }

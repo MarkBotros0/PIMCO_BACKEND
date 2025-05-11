@@ -36,6 +36,11 @@ export class CreateUserDto {
   @ApiProperty({ required: false })
   dateOfBirth?: Date;
 
+  @IsNotEmpty()
+  @IsInt()
+  @ApiProperty()
+  siteId: number;
+
   @IsOptional()
   @ValidateNested()
   @Type(() => UserDocumentsDto)

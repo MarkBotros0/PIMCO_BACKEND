@@ -7,6 +7,7 @@ import { UserDocuments } from './entities/user-documents.entity';
 import { EmployeeTypeEntity } from './entities/employee-type.entity';
 import { PayrollsModule } from '../payrolls/payrolls.module';
 import { SalaryDetails } from './entities/salary-details.entity';
+import { SitesModule } from '../sites/sites.module';
 
 @Module({
   imports: [
@@ -16,7 +17,8 @@ import { SalaryDetails } from './entities/salary-details.entity';
       EmployeeTypeEntity,
       SalaryDetails
     ]),
-    PayrollsModule
+    PayrollsModule,
+    SitesModule
   ],
   controllers: [UsersController],
   providers: [UsersService],

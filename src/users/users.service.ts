@@ -15,6 +15,8 @@ import { EmployeeTypeEntity } from './entities/employee-type.entity';
 import { PayrollsService } from '../payrolls/payrolls.service';
 import { SalaryDetails } from './entities/salary-details.entity';
 import { UsersQueryDto } from './dtos/users-query.dto';
+import { SitesService } from '../sites/sites.service';
+import { Site } from '../sites/entities/site.entity';
 
 @Injectable()
 export class UsersService {
@@ -27,7 +29,8 @@ export class UsersService {
     private readonly employeeTypeEntityRepository: Repository<EmployeeTypeEntity>,
     @InjectRepository(SalaryDetails)
     private readonly salaryDetailsRepository: Repository<SalaryDetails>,
-    private readonly payrollsService: PayrollsService
+    private readonly payrollsService: PayrollsService,
+    private readonly sitesService: SitesService
   ) {}
 
   async findOneByPhoneNumber(phoneNumber: string): Promise<User> {
@@ -45,7 +48,7 @@ export class UsersService {
 
   async findOneById(id: number): Promise<User> {
     const user: User = await this.usersRepository.findOne({
-      relations: ['employeeType', 'documents', 'salaryDetails'],
+      relations: ['employeeType', 'documents', 'salaryDetails', 'site'],
       where: { id }
     });
 
@@ -185,12 +188,16 @@ export class UsersService {
       );
     }
 
+    const site: Site = await this.sitesService.findOne(createUserDto.siteId);
+
     const user: User = await this.usersRepository.save({
       phoneNumber: createUserDto.phoneNumber,
       password: createUserDto.password,
       fullname: createUserDto.fullname,
       dateOfBirth: createUserDto.dateOfBirth ?? null,
-      isActive
+      isActive,
+      employeeType: { id: createUserDto.employeeTypeId },
+      site
     });
 
     await this.salaryDetailsRepository.save({ user });

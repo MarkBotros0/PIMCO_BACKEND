@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateSiteDto } from './dto/create-site.dto';
 import { UpdateSiteDto } from './dto/update-site.dto';
 import { Site } from './entities/site.entity';
@@ -28,7 +28,11 @@ export class SitesService {
   }
 
   async findOne(id: number): Promise<Site> {
-    return this.siteRepository.findOne({ where: { id } });
+    const site: Site = await this.siteRepository.findOne({ where: { id } });
+    if (!site) {
+      throw new NotFoundException('Site Id is not found');
+    }
+    return site;
   }
 
   async update(id: number, updateSiteDto: UpdateSiteDto): Promise<Site> {
