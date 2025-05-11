@@ -253,7 +253,7 @@ export class UsersService {
   async getAllEmployees(query: UsersQueryDto): Promise<User[]> {
     const { limit, page } = query;
     return this.usersRepository.find({
-      relations: ['documents', 'site', 'salaryDetails'],
+      relations: ['site'],
       where: { isActive: true },
       skip: limit * page,
       take: limit

@@ -37,7 +37,7 @@ export class UserWithSiteView {
     return {
       ...userData,
       highestRole,
-      site: new SiteView(user.site)
+      site: new SiteView(user.site).render()
     };
   }
 }

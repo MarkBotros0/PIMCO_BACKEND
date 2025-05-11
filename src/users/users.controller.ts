@@ -89,7 +89,7 @@ export class UsersController {
   @Get()
   async getAllEmployees(@Query() query: UsersQueryDto) {
     const users: User[] = await this.usersService.getAllEmployees(query);
-    return new UserWithDocumentsAndSalaryDetailsView(users).render();
+    return new UserWithSiteView(users).render();
   }
 
   @UseGuards(AccessTokenGuard, AdminOrHRGuard)
