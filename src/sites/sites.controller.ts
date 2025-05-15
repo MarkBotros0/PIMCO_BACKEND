@@ -28,8 +28,7 @@ export class SitesController {
     const site: Site = await this.sitesService.create(createSiteDto);
     return new SiteView(site).render();
   }
-
-  @UseGuards(AccessTokenGuard, AdminOrHRGuard)
+  
   @Get()
   async findAll() {
     const sites: Site[] = await this.sitesService.findAll();
